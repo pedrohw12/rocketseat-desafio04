@@ -6,21 +6,26 @@ import { SafeAreaView, View, FlatList, Text, StatusBar, StyleSheet, TouchableOpa
 export default function App() {
   const [repositories, setRepositories] = useState([]);
 
-  async function getRepositories() {
-    const response = await api.get('/repositories');
-    setRepositories(response.data);
-  }
-
   useEffect(() => {
-    getRepositories();
-  }, []);
+    api.get('repositories').then(response => {
+      setRepositories(response.data);
+    });
+  },[]);
 
   async function handleLikeRepository(id) {
-    const response = await api.post(`/repositories/${id}/like`);
+    // Implement "Like Repository" functionality
+    const response = await api.post(`repositories/${id}/like`);
+    
+    const likedRepository = response.data;
 
-    const index = repositories.findIndex((repo) => repo.id === id);
-    repositories[index] = response.data;
-    setRepositories([...repositories]);
+    const repositoriesUpdated = repositories.map( repository => {
+      if(repository.id === id){
+        return likedRepository;
+      }else{
+        return repository;
+      }
+    });
+    setRepositories(repositoriesUpdated);
   }
 
   return (
@@ -35,7 +40,7 @@ export default function App() {
               <Text style={styles.repository}>{item.title}</Text>
 
               <View style={styles.techsContainer}>
-                {item.techs?.map((tec) => (
+                {item.techs.split(',').map((tec) => (
                   <Text style={styles.tech} key={tec}>
                     {tec}
                   </Text>
