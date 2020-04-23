@@ -17,6 +17,7 @@ export default function App() {
     const response = await api.post(`/repositories/${id}/like`);
 
     const repository = response.data;
+    console.log(response.data) 
 
     // Keep repositories in order
     const repositoryIndex = repositories.findIndex((repo) => repo.id === id);
@@ -38,7 +39,7 @@ export default function App() {
               <Text style={styles.repository}>{item.title}</Text>
 
               <View style={styles.techsContainer}>
-                {item.techs.split(',').map((tec) => (
+                {item.techs.map((tec) => (
                   <Text style={styles.tech} key={tec}>
                     {tec}
                   </Text>
